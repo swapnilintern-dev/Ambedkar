@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a2466">
+<title>Dr. B. R. Ambedkar Digital Heritage Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Mukta:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#141a33; --navy:#1a2466; --blue:#2743c9; --sky:#dde3f6; --paper:#eef0f6; --white:#fbfcff;
+  --brass:#9c7424; --line:#c6cde3; --muted:#5a6180; --alert:#b3261e;
+  --serif:"Tiro Devanagari Hindi","Noto Serif Devanagari",Georgia,serif;
+  --sans:"Mukta","Noto Sans Devanagari",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--paper);color:var(--ink);font:20px/1.55 var(--sans);overscroll-behavior:none;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none;user-select:none;overflow:hidden;
+  padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0}
+.hidden{display:none!important}
+
+/* ---------- app frame ---------- */
+#app{height:100%;display:grid;grid-template-rows:auto 1fr}
+header.bar{display:flex;align-items:center;gap:16px;padding:14px 28px;background:var(--navy);color:#fff}
+header.bar .name{font:22px/1.2 var(--serif);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.langs{display:flex;background:rgba(255,255,255,.1);border-radius:999px;padding:4px}
+.langs button{padding:8px 18px;border-radius:999px;font-size:18px;min-height:48px}
+.langs button[aria-pressed=true]{background:#fff;color:var(--navy);font-weight:700}
+.homebtn{padding:10px 20px;border:1px solid rgba(255,255,255,.45);border-radius:999px;min-height:48px}
+main{overflow:hidden;position:relative}
+.screen{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:32px 40px 48px}
+.screen-head{display:flex;align-items:baseline;gap:20px;margin-bottom:24px;flex-wrap:wrap}
+.screen-head h2{font-size:40px;line-height:1.15}
+.screen-head p{margin:0;color:var(--muted)}
+
+/* ---------- attract ---------- */
+#s-attract,#s-wall{background:var(--navy);color:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:6vh 6vw;inset:0;position:fixed;z-index:20}
+.attract-name{font:clamp(56px,9vw,132px)/0.98 var(--serif);letter-spacing:-.01em;max-width:11ch}
+.attract-years{font:clamp(24px,3vw,40px)/1 var(--serif);color:#d9b56a;margin-top:18px}
+.attract-sub{font-size:clamp(20px,2vw,26px);color:#c9d0f0;max-width:40ch;margin-top:22px}
+.attract-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap}
+.fact{max-width:56ch;border-left:3px solid #d9b56a;padding-left:18px;min-height:4.8em;transition:opacity .8s}
+.fact b{display:block;font:26px/1.2 var(--serif);font-weight:400;color:#fff;margin-bottom:4px}
+.fact span{color:#c9d0f0}
+.touch{font-size:22px;padding:18px 30px;border:1px solid rgba(255,255,255,.5);border-radius:999px;animation:breathe 3s ease-in-out infinite}
+@keyframes breathe{50%{background:rgba(255,255,255,.12)}}
+
+/* ---------- home ---------- */
+#s-home{display:grid;grid-template-columns:minmax(260px,5fr) 7fr;gap:40px;align-items:stretch}
+.intro{display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:8px}
+.intro h1{font-size:clamp(44px,5.2vw,76px);line-height:1.02;color:var(--navy)}
+.intro .yrs{font:28px var(--serif);color:var(--brass);margin-top:12px}
+.intro p{color:var(--muted);max-width:34ch;margin-top:16px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:minmax(120px,1fr);gap:14px}
+.tile{text-align:left;padding:22px 24px;background:var(--white);border:1px solid var(--line);border-radius:6px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;min-height:120px}
+.tile h3{font-size:30px;line-height:1.1}
+.tile span{color:var(--muted);font-size:18px}
+.tile:active{transform:scale(.985)}
+.tile.primary{grid-column:span 2;background:var(--blue);color:#fff;border-color:var(--blue);grid-row:span 2;border-radius:10px}
+.tile.primary h3{font-size:46px}
+.tile.primary span{color:#dde3ff;font-size:20px}
+.tile.wide{grid-column:span 2;flex-direction:row;align-items:center;justify-content:space-between;background:transparent;border-style:dashed}
+.badge{background:var(--brass);color:#fff;border-radius:999px;padding:2px 12px;font-size:16px;margin-left:8px}
+
+/* ---------- ask ---------- */
+.askbar{display:flex;gap:12px;align-items:stretch;max-width:1100px}
+.askbar input{flex:1;font:inherit;font-size:24px;padding:18px 22px;border:2px solid var(--line);border-radius:8px;background:var(--white);-webkit-user-select:text;user-select:text;min-width:0}
+.btn{padding:14px 26px;border-radius:8px;background:var(--blue);color:#fff;font-weight:500;min-height:56px}
+.btn.ghost{background:transparent;color:var(--blue);border:2px solid var(--blue)}
+.btn.small{padding:8px 16px;min-height:44px;font-size:18px}
+.mic{width:72px;border-radius:8px;background:var(--navy);color:#fff;display:grid;place-items:center}
+.mic.rec{background:var(--alert);animation:breathe 1s infinite}
+.mic svg{width:30px;height:30px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 8px;max-width:1100px}
+.chip{padding:10px 18px;border:1px solid var(--line);border-radius:999px;background:var(--white);font-size:18px;text-align:left}
+.status{color:var(--muted);margin:20px 0;min-height:1.5em}
+.answer-wrap{display:grid;grid-template-columns:minmax(0,7fr) minmax(260px,4fr);gap:32px;max-width:1300px}
+.answer{background:var(--white);border-radius:8px;padding:26px 30px;border-top:4px solid var(--blue)}
+.answer p{margin:0 0 14px;font-size:22px;line-height:1.65;max-width:68ch}
+.cite{display:inline-grid;place-items:center;min-width:30px;height:30px;padding:0 6px;border-radius:6px;background:var(--sky);color:var(--navy);font-weight:700;font-size:16px;vertical-align:2px;margin:0 2px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.mode{font-size:16px;color:var(--muted);margin-top:10px}
+.sources h3{font-size:26px;margin-bottom:10px}
+.src{display:block;width:100%;text-align:left;padding:14px 16px;border-left:3px solid var(--brass);background:var(--white);margin-bottom:10px;border-radius:0 6px 6px 0}
+.src b{display:block;font-weight:500}
+.src small{color:var(--muted);font-size:16px;display:block;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ---------- library / reader ---------- */
+.doclist{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.doc{text-align:left;padding:20px 22px;background:var(--white);border:1px solid var(--line);border-radius:6px;min-height:130px}
+.doc h3{font-size:25px;line-height:1.2}
+.doc p{margin:8px 0 0;color:var(--muted);font-size:17px}
+.doc.new{border-color:var(--brass)}
+.reader{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+.reader img{width:100%;background:#fff;border:1px solid var(--line);border-radius:4px}
+.reader .text{background:var(--white);padding:22px 26px;border-radius:6px;font-size:20px;line-height:1.7;white-space:pre-wrap;-webkit-user-select:text;user-select:text;max-height:70vh;overflow-y:auto}
+.pager{display:flex;align-items:center;gap:14px;margin:0 0 18px;flex-wrap:wrap}
+.summary{background:var(--sky);padding:18px 22px;border-radius:6px;margin-bottom:16px}
+
+/* ---------- timeline ---------- */
+.track{display:flex;gap:0;overflow-x:auto;padding:10px 0 20px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.ev{flex:0 0 200px;text-align:left;padding:18px 18px 16px;border-top:3px solid var(--line);scroll-snap-align:start;position:relative}
+.ev::before{content:"";position:absolute;top:-10px;left:18px;width:16px;height:16px;border-radius:50%;background:var(--paper);border:3px solid var(--line)}
+.ev .yr{font:40px/1 var(--serif);color:var(--navy)}
+.ev .tt{display:block;margin-top:8px;font-size:18px;color:var(--muted)}
+.ev[aria-current=true]{border-top-color:var(--blue)}
+.ev[aria-current=true]::before{background:var(--blue);border-color:var(--blue)}
+.ev[aria-current=true] .tt{color:var(--ink);font-weight:500}
+.evdetail{display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start;background:var(--white);padding:30px 34px;border-radius:8px;max-width:1100px}
+.evdetail .big{font:92px/0.9 var(--serif);color:var(--brass)}
+.evdetail h3{font-size:36px}
+.evdetail .dt{color:var(--muted);margin:4px 0 12px}
+.evdetail p{font-size:22px;max-width:60ch;margin:0 0 18px}
+
+/* ---------- map ---------- */
+.mapwrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;height:calc(100% - 90px);min-height:480px}
+#graph{width:100%;height:100%;background:var(--white);border-radius:8px;touch-action:none}
+#graph text{font-family:var(--sans);font-size:13px;fill:var(--ink);pointer-events:none}
+#graph line{stroke:var(--line);stroke-width:1.5}
+#graph line.on{stroke:var(--blue);stroke-width:2.5}
+#graph g.node{cursor:pointer}
+#graph g.dim{opacity:.25}
+.nodeinfo{background:var(--white);border-radius:8px;padding:22px}
+.nodeinfo h3{font-size:28px;line-height:1.15}
+.nodeinfo .grp{color:var(--brass);font-size:17px;margin:4px 0 10px}
+.nodeinfo ul{padding-left:20px;margin:8px 0 16px;font-size:18px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:16px;color:var(--muted);margin-top:14px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+
+/* ---------- media / compile ---------- */
+.mediagrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.mediaitem{text-align:left;background:var(--white);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.mediaitem video,.mediaitem img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--navy);display:block}
+.mediaitem div{padding:12px 16px}
+.mediaitem small{color:var(--muted);display:block}
+.empty{max-width:60ch;color:var(--muted);font-size:22px;padding:30px 0}
+.citem{background:var(--white);padding:18px 22px;border-radius:6px;margin-bottom:12px;display:flex;gap:18px;align-items:flex-start;max-width:1000px}
+.citem div{flex:1}
+.citem p{margin:6px 0 0;color:var(--muted);font-size:18px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ---------- modal / toast ---------- */
+#modal{position:fixed;inset:0;background:rgba(20,26,51,.72);display:grid;place-items:center;z-index:50;padding:24px}
+#modal .box{background:var(--paper);border-radius:10px;max-width:1100px;width:100%;max-height:92vh;overflow:auto;padding:26px 30px;position:relative}
+#modal .close{position:sticky;top:0;float:right;background:var(--navy);color:#fff;border-radius:999px;padding:8px 20px;min-height:48px;z-index:2}
+.qr{display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center}
+.qr img{width:280px;height:280px;image-rendering:pixelated;background:#fff;padding:10px;border-radius:8px}
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:14px 26px;border-radius:999px;z-index:60;font-size:18px;max-width:90vw}
+
+/* ---------- smart display (wall) ---------- */
+#s-wall .wyear{font:clamp(120px,22vw,320px)/0.85 var(--serif);color:#d9b56a}
+#s-wall .wtitle{font:clamp(40px,5vw,72px)/1.05 var(--serif);margin-top:10px}
+#s-wall .wtext{font-size:clamp(22px,2.2vw,32px);color:#c9d0f0;max-width:44ch;margin-top:18px}
+#s-wall .wfoot{display:flex;justify-content:space-between;color:#c9d0f0;font-size:20px}
+.progress{height:4px;background:rgba(255,255,255,.15);margin-top:14px}
+.progress i{display:block;height:100%;background:#d9b56a;width:0}
+
+@media (max-width:1000px){
+  #s-home{grid-template-columns:1fr}
+  .answer-wrap,.reader,.mapwrap{grid-template-columns:1fr}
+  .mapwrap{height:auto}#graph{height:60vh}
+  .screen{padding:24px 22px 40px}
+  .qr{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- attract screen -->
+<section id="s-attract" class="hidden" aria-label="Welcome">
+  <div>
+    <div class="attract-name" data-i="attractName">Dr. B. R. Ambedkar</div>
+    <div class="attract-years">1891 – 1956</div>
+    <div class="attract-sub" data-i="attractSub">His writings, speeches, debates and manuscripts, in your language.</div>
+  </div>
+  <div class="attract-foot">
+    <div class="fact" id="fact"></div>
+    <div class="touch" data-i="touch">Touch anywhere to begin</div>
+  </div>
+</section>
+
+<!-- smart display wall mode -->
+<section id="s-wall" class="hidden" aria-label="Timeline display">
+  <div class="wfoot"><span data-i="title">Dr. B. R. Ambedkar Digital Heritage Archive</span><span id="wcount"></span></div>
+  <div>
+    <div class="wyear" id="wyear"></div>
+    <div class="wtitle" id="wtitle"></div>
+    <div class="wtext" id="wtext"></div>
+    <div class="progress"><i id="wbar"></i></div>
+  </div>
+</section>
+
+<div id="app">
+  <header class="bar">
+    <div class="name" data-i="title">Dr. B. R. Ambedkar Digital Heritage Archive</div>
+    <div class="langs" role="group" aria-label="Language">
+      <button data-lang="en" aria-pressed="true">English</button>
+      <button data-lang="hi" aria-pressed="false">हिंदी</button>
+      <button data-lang="mr" aria-pressed="false">मराठी</button>
+    </div>
+    <button class="homebtn" onclick="go('home')" data-i="home">Home</button>
+  </header>
+
+  <main>
+    <!-- home -->
+    <section id="s-home" class="screen">
+      <div class="intro">
+        <h1 data-i="attractName">Dr. B. R. Ambedkar</h1>
+        <div class="yrs">1891 – 1956</div>
+        <p data-i="introText">Explore his writings, speeches, the Constituent Assembly debates and rare manuscripts. Ask questions by voice or touch.</p>
+      </div>
+      <div class="tiles">
+        <button class="tile primary" onclick="go('ask')"><h3 data-i="ask">Ask the Archive</h3><span data-i="askSub">Search his writings and speeches by voice or text</span></button>
+        <button class="tile" onclick="go('library')"><h3 data-i="library">Library</h3><span data-i="librarySub">Books, speeches and debates</span></button>
+        <button class="tile" onclick="go('timeline')"><h3 data-i="timeline">Timeline</h3><span>1891 – 1956</span></button>
+        <button class="tile" onclick="go('map')"><h3 data-i="map">Knowledge Map</h3><span data-i="mapSub">People, ideas and events, connected</span></button>
+        <button class="tile" onclick="go('media')"><h3 data-i="media">Audio &amp; Video</h3><span data-i="mediaSub">Lectures, documentaries, photographs</span></button>
+        <button class="tile wide" onclick="go('compile')"><span><h3 style="display:inline" data-i="compile">My Compilation</h3><span class="badge hidden" id="cbadge">0</span></span><span data-i="compileSub">Collect passages and take them home</span></button>
+      </div>
+    </section>
+
+    <!-- ask -->
+    <section id="s-ask" class="screen hidden">
+      <div class="screen-head"><h2 data-i="ask">Ask the Archive</h2><p data-i="askHint">Answers come only from the archive, with sources.</p></div>
+      <div class="askbar">
+        <input id="q" type="text" data-ph="placeholder" placeholder="Type your question…" enterkeyhint="search" autocomplete="off">
+        <button class="mic" id="micbtn" aria-label="Ask by voice" onclick="toggleMic()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+        <button class="btn" onclick="ask(document.getElementById('q').value)" data-i="askBtn">Ask</button>
+      </div>
+      <div class="chips" id="chips"></div>
+      <div class="status" id="askstatus" aria-live="polite"></div>
+      <div class="answer-wrap hidden" id="answerwrap">
+        <div>
+          <div class="answer" id="answer"></div>
+          <div class="actions">
+            <button class="btn" onclick="speak(lastAnswer.answer)" data-i="listen">Listen</button>
+            <button class="btn ghost" id="addAnswer" onclick="addAnswer()" data-i="add">Add to compilation</button>
+          </div>
+          <div class="mode" id="mode"></div>
+        </div>
+        <div class="sources"><h3 data-i="sources">Sources</h3><div id="sources"></div></div>
+      </div>
+    </section>
+
+    <!-- library -->
+    <section id="s-library" class="screen hidden">
+      <div class="screen-head"><h2 data-i="library">Library</h2><p data-i="librarySub">Books, speeches and debates</p></div>
+      <div class="doclist" id="doclist"></div>
+    </section>
+
+    <!-- reader -->
+    <section id="s-reader" class="screen hidden">
+      <div class="screen-head"><h2 id="rtitle"></h2><p id="rmeta"></p></div>
+      <div class="pager">
+        <button class="btn ghost small" onclick="turn(-1)" data-i="prev">Previous</button>
+        <span id="rpage"></span>
+        <button class="btn ghost small" onclick="turn(1)" data-i="next">Next</button>
+        <button class="btn small" onclick="summarizePage()" data-i="summarize">Summarize page</button>
+        <button class="btn small" onclick="readPage()" data-i="listen">Listen</button>
+        <button class="btn small" onclick="translatePage()" data-i="translate">Translate</button>
+        <button class="btn ghost small" onclick="addPage()" data-i="add">Add to compilation</button>
+      </div>
+      <div class="summary hidden" id="rsummary"></div>
+      <div class="reader" id="rbody"></div>
+    </section>
+
+    <!-- timeline -->
+    <section id="s-timeline" class="screen hidden">
+      <div class="screen-head"><h2 data-i="timeline">Timeline</h2><p>1891 – 1956</p></div>
+      <div class="track" id="track"></div>
+      <div class="evdetail" id="evdetail"></div>
+    </section>
+
+    <!-- map -->
+    <section id="s-map" class="screen hidden">
+      <div class="screen-head"><h2 data-i="map">Knowledge Map</h2><p data-i="mapHint">Tap a circle to see how it connects.</p></div>
+      <div class="mapwrap">
+        <div><svg id="graph" role="img" aria-label="Knowledge map"></svg><div class="legend" id="legend"></div></div>
+        <div class="nodeinfo" id="nodeinfo"></div>
+      </div>
+    </section>
+
+    <!-- media -->
+    <section id="s-media" class="screen hidden">
+      <div class="screen-head"><h2 data-i="media">Audio &amp; Video</h2><p data-i="mediaSub">Lectures, documentaries, photographs</p></div>
+      <div class="mediagrid" id="mediagrid"></div>
+    </section>
+
+    <!-- compilation -->
+    <section id="s-compile" class="screen hidden">
+      <div class="screen-head"><h2 data-i="compile">My Compilation</h2><p data-i="compileSub">Collect passages and take them home</p></div>
+      <div id="clist"></div>
+      <button class="btn" id="genbtn" onclick="generate()" data-i="generate">Take it home (QR code)</button>
+    </section>
+  </main>
+</div>
+
+<div id="modal" class="hidden" role="dialog" aria-modal="true"><div class="box"><button class="close" onclick="closeModal()" data-i="close">Close</button><div id="mbody"></div></div></div>
+<div id="toast" class="hidden" role="status"></div>
+
+<script>
+/* ================= i18n ================= */
+const T = {
+  en:{title:"Dr. B. R. Ambedkar Digital Heritage Archive",attractName:"Dr. B. R. Ambedkar",attractSub:"His writings, speeches, debates and manuscripts, in your language.",touch:"Touch anywhere to begin",home:"Home",
+    introText:"Explore his writings, speeches, the Constituent Assembly debates and rare manuscripts. Ask questions by voice or touch.",
+    ask:"Ask the Archive",askSub:"Search his writings and speeches by voice or text",askHint:"Answers come only from the archive, with sources.",library:"Library",librarySub:"Books, speeches and debates",
+    timeline:"Timeline",map:"Knowledge Map",mapSub:"People, ideas and events, connected",mapHint:"Tap a circle to see how it connects.",media:"Audio & Video",mediaSub:"Lectures, documentaries, photographs",
+    compile:"My Compilation",compileSub:"Collect passages and take them home",placeholder:"Type your question…",askBtn:"Ask",listening:"Listening… tap the microphone to stop",
+    transcribing:"Understanding your question…",thinking:"Searching the archive…",sources:"Sources",listen:"Listen",add:"Add to compilation",added:"Added to your compilation",
+    summarize:"Summarize page",translate:"Translate",page:"Page",prev:"Previous",next:"Next",original:"Original page",explore:"Search the archive for this",
+    connections:"Connections",emptyCompile:"Your compilation is empty. Add passages from answers or from the library.",generate:"Take it home (QR code)",
+    scan:"Scan this code with your phone to open your compilation. You can save it as a PDF there.",remove:"Remove",close:"Close",
+    welcome:"Welcome to the Dr. B. R. Ambedkar Digital Heritage Archive.",noMic:"Voice input needs a secure connection on this device. Type your question instead.",
+    emptyLib:"No documents yet. Ingest sources on the server to fill the library.",emptyMedia:"No media yet. Add files to backend/data/media on the server.",
+    modeAI:"Answer written by the AI assistant from the sources listed. Check the original pages for exact wording.",modeEx:"AI assistant offline: showing the closest matching passages.",
+    newDoc:"New document digitized",error:"Something went wrong. Check the server connection and try again.",person:"Person",work:"Work",event:"Event",institution:"Institution",idea:"Idea",
+    q1:"What did he warn about in his closing speech to the Constituent Assembly?",q2:"What is the main argument of Annihilation of Caste?",q3:"What did he say about political and social democracy?"},
+  hi:{title:"डॉ. बी. आर. अम्बेडकर डिजिटल धरोहर अभिलेखागार",attractName:"डॉ. बी. आर. अम्बेडकर",attractSub:"उनके लेखन, भाषण, बहसें और पांडुलिपियाँ — आपकी भाषा में।",touch:"शुरू करने के लिए स्क्रीन को छुएँ",home:"मुख्य पृष्ठ",
+    introText:"उनके लेखन, भाषण, संविधान सभा की बहसें और दुर्लभ पांडुलिपियाँ देखें। आवाज़ या स्पर्श से प्रश्न पूछें।",
+    ask:"अभिलेखागार से पूछें",askSub:"आवाज़ या टेक्स्ट से उनके लेखन और भाषण खोजें",askHint:"उत्तर केवल अभिलेखागार से, स्रोतों के साथ।",library:"पुस्तकालय",librarySub:"पुस्तकें, भाषण और बहसें",
+    timeline:"जीवन यात्रा",map:"ज्ञान मानचित्र",mapSub:"लोग, विचार और घटनाएँ — आपस में जुड़े",mapHint:"जुड़ाव देखने के लिए किसी वृत्त को छुएँ।",media:"ऑडियो और वीडियो",mediaSub:"व्याख्यान, वृत्तचित्र, तस्वीरें",
+    compile:"मेरा संकलन",compileSub:"अंश चुनें और घर ले जाएँ",placeholder:"अपना प्रश्न लिखें…",askBtn:"पूछें",listening:"सुन रहे हैं… रोकने के लिए माइक्रोफ़ोन छुएँ",
+    transcribing:"आपका प्रश्न समझ रहे हैं…",thinking:"अभिलेखागार में खोज रहे हैं…",sources:"स्रोत",listen:"सुनें",add:"संकलन में जोड़ें",added:"आपके संकलन में जोड़ा गया",
+    summarize:"पृष्ठ का सारांश",translate:"अनुवाद करें",page:"पृष्ठ",prev:"पिछला",next:"अगला",original:"मूल पृष्ठ",explore:"इस विषय पर अभिलेखागार खोजें",
+    connections:"जुड़ाव",emptyCompile:"आपका संकलन खाली है। उत्तरों या पुस्तकालय से अंश जोड़ें।",generate:"घर ले जाएँ (QR कोड)",
+    scan:"अपना संकलन खोलने के लिए फ़ोन से यह कोड स्कैन करें। वहाँ आप इसे PDF के रूप में सहेज सकते हैं।",remove:"हटाएँ",close:"बंद करें",
+    welcome:"डॉ. बी. आर. अम्बेडकर डिजिटल धरोहर अभिलेखागार में आपका स्वागत है।",noMic:"इस डिवाइस पर आवाज़ के लिए सुरक्षित कनेक्शन चाहिए। कृपया प्रश्न लिखें।",
+    emptyLib:"अभी कोई दस्तावेज़ नहीं है। पुस्तकालय भरने के लिए सर्वर पर स्रोत जोड़ें।",emptyMedia:"अभी कोई मीडिया नहीं है। सर्वर पर backend/data/media में फ़ाइलें जोड़ें।",
+    modeAI:"यह उत्तर AI सहायक ने दिए गए स्रोतों से लिखा है। सटीक शब्दों के लिए मूल पृष्ठ देखें।",modeEx:"AI सहायक ऑफ़लाइन है: सबसे निकट के अंश दिखाए जा रहे हैं।",
+    newDoc:"नया दस्तावेज़ डिजिटाइज़ हुआ",error:"कुछ गड़बड़ हुई। सर्वर कनेक्शन जाँचें और फिर प्रयास करें।",person:"व्यक्ति",work:"रचना",event:"घटना",institution:"संस्था",idea:"विचार",
+    q1:"संविधान सभा में अपने अंतिम भाषण में उन्होंने किस बात की चेतावनी दी?",q2:"'जाति का विनाश' का मुख्य तर्क क्या है?",q3:"राजनीतिक और सामाजिक लोकतंत्र के बारे में उन्होंने क्या कहा?"},
+  mr:{title:"डॉ. बी. आर. आंबेडकर डिजिटल वारसा अभिलेखागार",attractName:"डॉ. बी. आर. आंबेडकर",attractSub:"त्यांचे लेखन, भाषणे, चर्चा आणि हस्तलिखिते — तुमच्या भाषेत.",touch:"सुरू करण्यासाठी स्क्रीनला स्पर्श करा",home:"मुख्यपृष्ठ",
+    introText:"त्यांचे लेखन, भाषणे, संविधान सभेतील चर्चा आणि दुर्मिळ हस्तलिखिते पाहा. आवाजाने किंवा स्पर्शाने प्रश्न विचारा.",
+    ask:"अभिलेखागाराला विचारा",askSub:"आवाज किंवा मजकुराद्वारे त्यांचे लेखन आणि भाषणे शोधा",askHint:"उत्तरे फक्त अभिलेखागारातून, स्रोतांसह.",library:"ग्रंथालय",librarySub:"पुस्तके, भाषणे आणि चर्चा",
+    timeline:"जीवनप्रवास",map:"ज्ञान नकाशा",mapSub:"व्यक्ती, विचार आणि घटना — एकमेकांशी जोडलेले",mapHint:"संबंध पाहण्यासाठी एखाद्या वर्तुळाला स्पर्श करा.",media:"ऑडिओ आणि व्हिडिओ",mediaSub:"व्याख्याने, माहितीपट, छायाचित्रे",
+    compile:"माझे संकलन",compileSub:"उतारे निवडा आणि घरी घेऊन जा",placeholder:"तुमचा प्रश्न लिहा…",askBtn:"विचारा",listening:"ऐकत आहे… थांबवण्यासाठी मायक्रोफोनला स्पर्श करा",
+    transcribing:"तुमचा प्रश्न समजून घेत आहे…",thinking:"अभिलेखागारात शोधत आहे…",sources:"स्रोत",listen:"ऐका",add:"संकलनात जोडा",added:"तुमच्या संकलनात जोडले",
+    summarize:"पानाचा सारांश",translate:"भाषांतर करा",page:"पान",prev:"मागील",next:"पुढील",original:"मूळ पान",explore:"या विषयावर अभिलेखागार शोधा",
+    connections:"संबंध",emptyCompile:"तुमचे संकलन रिकामे आहे. उत्तरांमधून किंवा ग्रंथालयातून उतारे जोडा.",generate:"घरी न्या (QR कोड)",
+    scan:"तुमचे संकलन उघडण्यासाठी फोनने हा कोड स्कॅन करा. तिथे तुम्ही ते PDF म्हणून जतन करू शकता.",remove:"काढा",close:"बंद करा",
+    welcome:"डॉ. बी. आर. आंबेडकर डिजिटल वारसा अभिलेखागारात आपले स्वागत आहे.",noMic:"या डिव्हाइसवर आवाजासाठी सुरक्षित कनेक्शन लागते. कृपया प्रश्न लिहा.",
+    emptyLib:"अद्याप कोणतेही दस्तऐवज नाहीत. ग्रंथालय भरण्यासाठी सर्व्हरवर स्रोत जोडा.",emptyMedia:"अद्याप कोणतेही माध्यम नाही. सर्व्हरवर backend/data/media मध्ये फाइल्स जोडा.",
+    modeAI:"हे उत्तर AI सहाय्यकाने दिलेल्या स्रोतांमधून लिहिले आहे. नेमक्या शब्दांसाठी मूळ पाने पाहा.",modeEx:"AI सहाय्यक ऑफलाइन आहे: सर्वात जवळचे उतारे दाखवत आहे.",
+    newDoc:"नवीन दस्तऐवज डिजिटाइझ झाला",error:"काहीतरी चुकले. सर्व्हर कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.",person:"व्यक्ती",work:"ग्रंथ",event:"घटना",institution:"संस्था",idea:"विचार",
+    q1:"संविधान सभेतील शेवटच्या भाषणात त्यांनी कोणता इशारा दिला?",q2:"'जातिनिर्मूलन' या ग्रंथाचा मुख्य युक्तिवाद काय आहे?",q3:"राजकीय आणि सामाजिक लोकशाहीबद्दल ते काय म्हणाले?"}
+};
+let LANG = "en";
+const t = k => (T[LANG] && T[LANG][k]) || T.en[k] || k;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const params = new URLSearchParams(location.search);
+const WALL = params.get("mode") === "wall";
+
+function applyI18n(){
+  document.documentElement.lang = LANG;
+  document.querySelectorAll("[data-i]").forEach(el => el.textContent = t(el.dataset.i));
+  document.querySelectorAll("[data-ph]").forEach(el => el.placeholder = t(el.dataset.ph));
+  document.querySelectorAll(".langs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === LANG));
+  renderChips();
+  if (current === "timeline") showEvent(evIndex);
+  if (current === "map" && selNode) selectNode(selNode);
+  if (current === "compile") renderCompile();
+}
+function setLang(l){ LANG = l; applyI18n(); }
+document.querySelectorAll(".langs button").forEach(b => b.onclick = () => setLang(b.dataset.lang));
+
+const trCache = {};
+async function tr(text){
+  if (LANG === "en" || !text) return text;
+  const k = LANG + "|" + text;
+  if (trCache[k]) return trCache[k];
+  try { const r = await api("/api/translate", {text, lang: LANG}); return trCache[k] = r.text; } catch { return text; }
+}
+
+/* ================= helpers ================= */
+async function api(url, body){
+  const opt = body instanceof FormData ? {method:"POST", body} : body ? {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)} : {};
+  const r = await fetch(url, opt);
+  if (!r.ok){ let m = t("error"); try { m = (await r.json()).detail || m; } catch {} throw new Error(m); }
+  return r.headers.get("content-type")?.includes("json") ? r.json() : r.blob();
+}
+let toastTimer;
+function toast(msg){ const el = $("toast"); el.textContent = msg; el.classList.remove("hidden"); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.add("hidden"), 3200); }
+function openModal(html){ $("mbody").innerHTML = html; $("modal").classList.remove("hidden"); }
+function closeModal(){ $("modal").classList.add("hidden"); $("mbody").innerHTML = ""; }
+$("modal").addEventListener("click", e => { if (e.target.id === "modal") closeModal(); });
+function paras(text){ return String(text).split(/\n{2,}|\n/).filter(s => s.trim()).map(p => `<p>${esc(p)}</p>`).join(""); }
+
+/* ================= navigation ================= */
+let current = "home";
+const screens = ["home","ask","library","reader","timeline","map","media","compile"];
+function go(name){
+  closeModal();
+  $("s-attract").classList.add("hidden");
+  screens.forEach(s => $("s-" + s).classList.toggle("hidden", s !== name));
+  current = name;
+  ({library: loadLibrary, timeline: loadTimeline, map: loadMap, media: loadMedia, compile: renderCompile}[name] || (()=>{}))();
+  if (name === "ask") setTimeout(() => $("q").focus({preventScroll:true}), 50);
+}
+function showAttract(){ current = "attract"; $("s-attract").classList.remove("hidden"); }
+$("s-attract").addEventListener("click", () => { go("home"); });
+
+/* ================= audio ================= */
+const player = new Audio();
+let audioUnlocked = false, lastSpoken = "";
+function silentWav(){
+  const n = 800, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+  const w = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+  w(0,"RIFF"); v.setUint32(4, 36 + n*2, true); w(8,"WAVE"); w(12,"fmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+  v.setUint32(24,8000,true); v.setUint32(28,16000,true); v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,"data"); v.setUint32(40,n*2,true);
+  return URL.createObjectURL(new Blob([buf], {type:"audio/wav"}));
+}
+document.addEventListener("pointerdown", () => {
+  if (audioUnlocked) return;
+  audioUnlocked = true; player.src = silentWav(); player.play().catch(() => {});
+}, {capture:true});
+async function speak(text){
+  if (!text) return;
+  lastSpoken = text;
+  try {
+    const blob = await api("/api/tts", {text, lang: LANG});
+    player.src = URL.createObjectURL(blob);
+    await player.play();
+  } catch (e) { toast(e.message); }
+}
+
+/* ================= ask ================= */
+let lastAnswer = null;
+function renderChips(){ $("chips").innerHTML = ["q1","q2","q3"].map(k => `<button class="chip" onclick="askChip('${k}')">${esc(t(k))}</button>`).join(""); }
+function askChip(k){ $("q").value = t(k); ask(t(k)); }
+$("q").addEventListener("keydown", e => { if (e.key === "Enter") ask($("q").value); });
+
+async function ask(q){
+  q = (q || "").trim(); if (!q) return;
+  $("q").blur();
+  $("answerwrap").classList.add("hidden");
+  $("askstatus").textContent = t("thinking");
+  try {
+    const r = await api("/api/ask", {question: q, lang: LANG});
+    lastAnswer = {...r, question: q};
+    $("askstatus").textContent = "";
+    $("answer").innerHTML = paras(r.answer).replace(/\[(\d+(?:\s*,\s*\d+)*)\]/g, (m, g) =>
+      g.split(",").map(n => `<button class="cite" onclick="openSource(${+n})">${+n}</button>`).join(""));
+    $("sources").innerHTML = r.sources.map(s => `<button class="src" onclick="openSource(${s.n})"><b>[${s.n}] ${esc(s.title)}</b><small>${esc(t("page"))} ${s.page} — ${esc(s.text.slice(0,160))}</small></button>`).join("");
+    $("mode").textContent = r.mode === "ai" ? t("modeAI") : r.mode === "extractive" ? t("modeEx") : "";
+    $("addAnswer").textContent = t("add");
+    $("answerwrap").classList.remove("hidden");
+  } catch (e) { $("askstatus").textContent = e.message; }
+}
+function openSource(n){
+  const s = lastAnswer?.sources.find(x => x.n === n); if (!s) return;
+  openPageModal(s.doc_id, s.page, s.text);
+}
+async function openPageModal(docId, page, highlight){
+  try {
+    const p = await api(`/api/docs/${encodeURIComponent(docId)}/page/${page}`);
+    openModal(`<h2 style="font-size:30px;margin-bottom:4px">${esc(p.doc.title)}</h2>
+      <p style="color:var(--muted);margin:0 0 16px">${esc(t("page"))} ${page}${p.doc.source ? " — " + esc(p.doc.source) : ""}</p>
+      ${highlight ? `<div class="summary">${esc(highlight)}</div>` : ""}
+      <div class="actions" style="margin-bottom:16px">
+        <button class="btn small" onclick="openReader('${esc(docId)}',${page})">${esc(t("library"))}</button>
+        <button class="btn ghost small" onclick="addItem(${JSON.stringify(p.doc.title).replace(/"/g,'&quot;')}, ${JSON.stringify(t("page")+" "+page+" — "+(p.doc.source||"")).replace(/"/g,'&quot;')}, window.__modalText)">${esc(t("add"))}</button>
+      </div>
+      <div class="reader">${p.image ? `<div><img src="${p.image}" alt="${esc(t("original"))}"></div>` : ""}<div class="text">${esc(p.text)}</div></div>`);
+    window.__modalText = highlight || p.text;
+  } catch (e) { toast(e.message); }
+}
+
+/* voice */
+let rec = null, recTimer;
+async function toggleMic(){
+  if (rec){ rec.stop(); return; }
+  if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder){ toast(t("noMic")); return; }
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({audio:true}); } catch { toast(t("noMic")); return; }
+  const mime = ["audio/webm;codecs=opus","audio/webm","audio/mp4"].find(m => MediaRecorder.isTypeSupported(m)) || "";
+  const chunks = [];
+  rec = new MediaRecorder(stream, mime ? {mimeType: mime} : {});
+  rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+  rec.onstop = async () => {
+    clearTimeout(recTimer);
+    stream.getTracks().forEach(tr => tr.stop());
+    const type = rec.mimeType || mime || "audio/webm";
+    rec = null; $("micbtn").classList.remove("rec");
+    $("askstatus").textContent = t("transcribing");
+    const fd = new FormData();
+    fd.append("audio", new Blob(chunks, {type}), "question." + (type.includes("mp4") ? "m4a" : "webm"));
+    fd.append("lang", LANG);
+    try {
+      const r = await api("/api/stt", fd);
+      if (!r.text) { $("askstatus").textContent = ""; return; }
+      $("q").value = r.text; ask(r.text);
+    } catch (e) { $("askstatus").textContent = e.message; }
+  };
+  rec.start(); $("micbtn").classList.add("rec"); $("askstatus").textContent = t("listening");
+  recTimer = setTimeout(() => rec && rec.stop(), 12000);
+}
+
+/* ================= library & reader ================= */
+let docs = null, reader = null;
+async function loadLibrary(force){
+  if (docs && !force) return renderLibrary();
+  try { docs = (await api("/api/docs")).documents; renderLibrary(); } catch (e) { $("doclist").innerHTML = `<p class="empty">${esc(e.message)}</p>`; }
+}
+function renderLibrary(){
+  if (!docs.length){ $("doclist").innerHTML = `<p class="empty">${esc(t("emptyLib"))}</p>`; return; }
+  $("doclist").innerHTML = docs.map(d => `<button class="doc ${d.origin !== "ingest" ? "new" : ""}" onclick="openReader('${esc(d.id)}', ${d.first_page || 1})">
+    <h3>${esc(d.title)}</h3><p>${esc([d.type, d.date, d.language].filter(Boolean).join(", "))}</p><p>${esc(d.source || "")}</p></button>`).join("");
+}
+async function openReader(docId, page){
+  closeModal();
+  if (!docs) try { docs = (await api("/api/docs")).documents; } catch {}
+  const d = docs?.find(x => x.id === docId);
+  reader = {doc: d, id: docId, page, first: d?.first_page || 1, last: d?.last_page || page, text: ""};
+  go("reader"); renderReader();
+}
+async function renderReader(){
+  $("rsummary").classList.add("hidden");
+  try {
+    const p = await api(`/api/docs/${encodeURIComponent(reader.id)}/page/${reader.page}`);
+    reader.text = p.text; reader.doc = p.doc;
+    $("rtitle").textContent = p.doc.title;
+    $("rmeta").textContent = [p.doc.type, p.doc.date, p.doc.source].filter(Boolean).join(", ");
+    $("rpage").textContent = `${t("page")} ${reader.page} / ${reader.last}`;
+    $("rbody").innerHTML = (p.image ? `<div><img src="${p.image}" alt="${esc(t("original"))}"></div>` : "") + `<div class="text" id="rtext">${esc(p.text)}</div>`;
+  } catch (e) { toast(e.message); }
+}
+function turn(d){ if (!reader) return; const n = reader.page + d; if (n < reader.first || n > reader.last) return; reader.page = n; renderReader(); }
+async function summarizePage(){
+  $("rsummary").classList.remove("hidden"); $("rsummary").textContent = t("thinking");
+  try { const r = await api("/api/summarize", {doc_id: reader.id, page: reader.page, lang: LANG}); reader.summary = r.summary; $("rsummary").textContent = r.summary; }
+  catch (e) { $("rsummary").textContent = e.message; }
+}
+function readPage(){ const s = !$("rsummary").classList.contains("hidden") && reader.summary; speak(s || ($("rtext")?.textContent || "").slice(0, 1500)); }
+async function translatePage(){ const el = $("rtext"); if (!el) return; el.textContent = t("thinking"); el.textContent = await tr(reader.text.slice(0, 6000)); }
+function addPage(){ addItem(reader.doc.title, `${t("page")} ${reader.page} — ${reader.doc.source || ""}`, reader.summary || reader.text); }
+
+/* ================= compilation ================= */
+let compilation = [];
+function addItem(title, source, text){
+  if (!text) return;
+  compilation.push({title, source, text: text.slice(0, 5000)});
+  updateBadge(); toast(t("added"));
+}
+function addAnswer(){
+  if (!lastAnswer) return;
+  const src = lastAnswer.sources.map(s => `[${s.n}] ${s.title}, ${t("page")} ${s.page}`).join("; ");
+  addItem(lastAnswer.question, src, lastAnswer.answer);
+  $("addAnswer").textContent = t("added");
+}
+function updateBadge(){ $("cbadge").textContent = compilation.length; $("cbadge").classList.toggle("hidden", !compilation.length); }
+function renderCompile(){
+  $("genbtn").classList.toggle("hidden", !compilation.length);
+  $("clist").innerHTML = compilation.length ? compilation.map((c, i) => `<div class="citem"><div><b>${esc(c.title)}</b><p>${esc(c.text)}</p></div>
+    <button class="btn ghost small" onclick="compilation.splice(${i},1);updateBadge();renderCompile()">${esc(t("remove"))}</button></div>`).join("")
+    : `<p class="empty">${esc(t("emptyCompile"))}</p>`;
+}
+async function generate(){
+  try {
+    const r = await api("/api/compile", {items: compilation, lang: LANG});
+    openModal(`<div class="qr"><img src="${r.qr}" alt="QR code"><div><h2 style="font-size:34px;margin-bottom:12px">${esc(t("compile"))}</h2><p style="font-size:22px">${esc(t("scan"))}</p><p style="color:var(--muted);font-size:16px;word-break:break-all">${esc(r.url)}</p></div></div>`);
+  } catch (e) { toast(e.message); }
+}
+
+/* ================= timeline ================= */
+let events = null, evIndex = 0;
+async function loadTimeline(){
+  if (!events) try { events = (await api("/api/timeline")).events; } catch (e) { toast(e.message); return; }
+  $("track").innerHTML = events.map((e, i) => `<button class="ev" onclick="showEvent(${i})"><span class="yr">${esc(e.year)}</span><span class="tt">${esc(e.title)}</span></button>`).join("");
+  showEvent(evIndex);
+}
+async function showEvent(i){
+  if (!events) return;
+  evIndex = (i + events.length) % events.length;
+  const e = events[evIndex];
+  document.querySelectorAll(".ev").forEach((b, j) => b.setAttribute("aria-current", j === evIndex));
+  document.querySelectorAll(".ev")[evIndex]?.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
+  const [title, text] = await Promise.all([tr(e.title), tr(e.text)]);
+  $("evdetail").innerHTML = `<div class="big">${esc(e.year)}</div><div><h3>${esc(title)}</h3><div class="dt">${esc(e.date)}</div><p>${esc(text)}</p>
+    <div class="actions"><button class="btn" onclick="speak(${JSON.stringify(title + ". " + text).replace(/"/g,'&quot;')})">${esc(t("listen"))}</button>
+    <button class="btn ghost" onclick="exploreQuery(${JSON.stringify(e.query).replace(/"/g,'&quot;')})">${esc(t("explore"))}</button></div></div>`;
+}
+function exploreQuery(q){ go("ask"); $("q").value = q; ask(q); }
+
+/* ================= knowledge map ================= */
+let graph = null, selNode = null;
+const GCOL = {person:"#2743c9", work:"#9c7424", event:"#b3261e", institution:"#2f7a5a", idea:"#6a3fa0"};
+async function loadMap(){
+  if (!graph) try { graph = await api("/api/graph"); layoutGraph(); } catch (e) { toast(e.message); return; }
+  drawGraph();
+  $("legend").innerHTML = Object.entries(GCOL).map(([g, c]) => `<span><i style="background:${c}"></i>${esc(t(g))}</span>`).join("");
+  selectNode(selNode || "ambedkar");
+}
+function layoutGraph(){
+  const W = 1000, H = 700, N = graph.nodes, byId = {};
+  N.forEach((n, i) => { const a = i / N.length * Math.PI * 2; n.x = W/2 + Math.cos(a) * 320; n.y = H/2 + Math.sin(a) * 240; byId[n.id] = n; n.deg = 0; });
+  graph.edges.forEach(e => { byId[e.from].deg++; byId[e.to].deg++; });
+  const hub = byId.ambedkar; if (hub){ hub.x = W/2; hub.y = H/2; }
+  for (let it = 0; it < 500; it++){
+    const cool = 1 - it / 500;
+    N.forEach(a => { a.fx = 0; a.fy = 0; });
+    for (let i = 0; i < N.length; i++) for (let j = i + 1; j < N.length; j++){
+      const a = N[i], b = N[j]; let dx = a.x - b.x, dy = a.y - b.y, d2 = dx*dx + dy*dy + 0.01, f = 9000 / d2, d = Math.sqrt(d2);
+      a.fx += f * dx / d; a.fy += f * dy / d; b.fx -= f * dx / d; b.fy -= f * dy / d;
+    }
+    graph.edges.forEach(e => { const a = byId[e.from], b = byId[e.to]; const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1, f = (d - 150) * 0.05;
+      a.fx += f * dx / d; a.fy += f * dy / d; b.fx -= f * dx / d; b.fy -= f * dy / d; });
+    N.forEach(n => { if (n === hub) return; n.fx += (W/2 - n.x) * 0.01; n.fy += (H/2 - n.y) * 0.01;
+      n.x += Math.max(-20, Math.min(20, n.fx)) * cool; n.y += Math.max(-20, Math.min(20, n.fy)) * cool;
+      n.x = Math.max(60, Math.min(W - 60, n.x)); n.y = Math.max(40, Math.min(H - 40, n.y)); });
+  }
+  graph.byId = byId;
+}
+function drawGraph(){
+  const svg = $("graph"); svg.setAttribute("viewBox", "0 0 1000 700");
+  const B = graph.byId;
+  svg.innerHTML = graph.edges.map((e, i) => `<line data-e="${i}" x1="${B[e.from].x}" y1="${B[e.from].y}" x2="${B[e.to].x}" y2="${B[e.to].y}"/>`).join("") +
+    graph.nodes.map(n => { const r = 10 + Math.min(n.deg, 12) * 1.6; const lbl = n.label.length > 26 ? n.label.slice(0, 24) + "…" : n.label;
+      return `<g class="node" data-id="${n.id}" onclick="selectNode('${n.id}')"><circle cx="${n.x}" cy="${n.y}" r="${r + 14}" fill="transparent"/>
+      <circle cx="${n.x}" cy="${n.y}" r="${r}" fill="${GCOL[n.group]}" stroke="#fff" stroke-width="3"/>
+      <text x="${n.x}" y="${n.y + r + 16}" text-anchor="middle">${esc(lbl)}</text></g>`; }).join("");
+}
+async function selectNode(id){
+  if (!graph) return;
+  selNode = id; const n = graph.byId[id];
+  const links = graph.edges.map((e, i) => ({e, i})).filter(({e}) => e.from === id || e.to === id);
+  const near = new Set([id, ...links.map(({e}) => e.from === id ? e.to : e.from)]);
+  document.querySelectorAll("#graph g.node").forEach(g => g.classList.toggle("dim", !near.has(g.dataset.id)));
+  document.querySelectorAll("#graph line").forEach(l => l.classList.toggle("on", links.some(x => x.i === +l.dataset.e)));
+  const desc = await tr(n.desc);
+  $("nodeinfo").innerHTML = `<h3>${esc(n.label)}</h3><div class="grp">${esc(t(n.group))}</div><p style="margin:0 0 10px">${esc(desc)}</p>
+    <b>${esc(t("connections"))}</b><ul>${links.map(({e}) => { const o = graph.byId[e.from === id ? e.to : e.from];
+      return `<li><a href="#" onclick="selectNode('${o.id}');return false">${esc(o.label)}</a> <span style="color:var(--muted)">(${esc(e.label)})</span></li>`; }).join("")}</ul>
+    <div class="actions"><button class="btn small" onclick="speak(${JSON.stringify(n.label + ". " + desc).replace(/"/g,'&quot;')})">${esc(t("listen"))}</button>
+    <button class="btn ghost small" onclick="exploreQuery(${JSON.stringify(n.query).replace(/"/g,'&quot;')})">${esc(t("explore"))}</button></div>`;
+}
+
+/* ================= media ================= */
+async function loadMedia(){
+  try {
+    const items = (await api("/api/media")).items;
+    $("mediagrid").innerHTML = items.length ? items.map((m, i) => `<button class="mediaitem" onclick="playMedia(${i})">
+      ${m.kind === "video" ? `<video src="${esc(m.url)}#t=1" preload="metadata" muted playsinline></video>` : m.kind === "image" ? `<img src="${esc(m.url)}" alt="">` : `<img alt="">`}
+      <div><b>${esc(m.title)}</b><small>${esc(m.source || m.description || "")}</small></div></button>`).join("") : `<p class="empty">${esc(t("emptyMedia"))}</p>`;
+    window.__media = items;
+  } catch (e) { toast(e.message); }
+}
+function playMedia(i){
+  const m = window.__media[i];
+  const el = m.kind === "video" ? `<video src="${esc(m.url)}" controls autoplay playsinline style="width:100%;border-radius:6px"></video>`
+    : m.kind === "audio" ? `<audio src="${esc(m.url)}" controls autoplay style="width:100%"></audio>` : `<img src="${esc(m.url)}" style="width:100%" alt="">`;
+  openModal(`<h2 style="font-size:30px;margin-bottom:12px">${esc(m.title)}</h2>${el}<p>${esc(m.description || "")}</p><p style="color:var(--muted)">${esc(m.source || "")}</p>`);
+}
+
+/* ================= attract facts & idle reset ================= */
+let factIdx = 0;
+async function cycleFact(){
+  if (!events) try { events = (await api("/api/timeline")).events; } catch { return; }
+  const e = events[factIdx++ % events.length], f = $("fact");
+  f.style.opacity = 0;
+  setTimeout(() => { f.innerHTML = `<b>${esc(e.year)} — ${esc(e.title)}</b><span>${esc(e.text)}</span>`; f.style.opacity = 1; }, 800);
+}
+let idle;
+function resetIdle(){
+  clearTimeout(idle);
+  idle = setTimeout(() => { compilation = []; updateBadge(); lastAnswer = null; $("answerwrap").classList.add("hidden"); $("q").value = ""; setLang("en"); showAttract(); }, 120000);
+}
+["pointerdown","keydown"].forEach(ev => document.addEventListener(ev, resetIdle, {passive:true}));
+
+/* ================= live hardware events (SSE) ================= */
+function connectEvents(){
+  const es = new EventSource("/api/events");
+  es.onmessage = m => {
+    const ev = JSON.parse(m.data);
+    if (ev.type === "sensor") handleSensor(ev);
+    else if (ev.type === "digitized"){ docs = null; toast(`${t("newDoc")}: ${ev.title}`); if (current === "library") loadLibrary(true); }
+  };
+  es.onerror = () => { es.close(); setTimeout(connectEvents, 3000); };
+}
+function handleSensor(ev){
+  if (ev.kind === "visitor"){
+    if (current === "attract" && !WALL){ go("home"); resetIdle(); speak(t("welcome")); }
+  } else if (ev.kind === "button"){
+    resetIdle();
+    if (ev.value === "REPEAT") speak(lastSpoken);
+    else if (ev.value === "LANG") setLang({en:"hi", hi:"mr", mr:"en"}[LANG]);
+    else if (ev.value === "NEXT"){
+      if (current === "reader") turn(1);
+      else if (current === "timeline") showEvent(evIndex + 1);
+      else if (current === "attract") go("home");
+    }
+  }
+}
+
+/* ================= smart display (wall) mode ================= */
+async function startWall(){
+  $("app").classList.add("hidden"); $("s-wall").classList.remove("hidden");
+  try { events = (await api("/api/timeline")).events; } catch { return; }
+  let i = 0;
+  const show = () => {
+    const e = events[i % events.length];
+    $("wyear").textContent = e.year; $("wtitle").textContent = e.title; $("wtext").textContent = e.text;
+    $("wcount").textContent = `${(i % events.length) + 1} / ${events.length}`;
+    const bar = $("wbar"); bar.style.transition = "none"; bar.style.width = "0";
+    requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.transition = "width 9s linear"; bar.style.width = "100%"; }));
+    i++;
+  };
+  show(); setInterval(show, 9000);
+}
+
+/* ================= boot ================= */
+applyI18n();
+connectEvents();
+if (WALL) startWall();
+else { showAttract(); cycleFact(); setInterval(() => current === "attract" && cycleFact(), 9000); resetIdle(); }
+</script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Curator console - Ambedkar Digital Heritage Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Mukta:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#141a33;--navy:#1a2466;--blue:#2743c9;--sky:#dde3f6;--paper:#eef0f6;--white:#fbfcff;--brass:#9c7424;--line:#c6cde3;--muted:#5a6180;--alert:#b3261e;--ok:#2f7a5a;
+  --serif:"Tiro Devanagari Hindi",Georgia,serif;--sans:"Mukta",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.5 var(--sans)}
+header{background:var(--navy);color:#fff;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+header h1{font:24px var(--serif);margin:0;font-weight:400}
+header span{color:#c9d0f0;font-size:15px}
+main{display:grid;grid-template-columns:minmax(0,3fr) minmax(300px,2fr);gap:22px;padding:22px 28px;max-width:1500px;margin:0 auto}
+section{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:20px 22px}
+h2{font:22px var(--serif);font-weight:400;margin:0 0 14px}
+.full{grid-column:1/-1}
+label{display:block;font-size:15px;color:var(--muted);margin:10px 0 4px}
+input,select{font:inherit;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:#fff}
+.row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.row>*{flex:1;min-width:140px}
+button{font:inherit;cursor:pointer;border:0;border-radius:6px;padding:11px 18px;background:var(--blue);color:#fff;font-weight:500}
+button.ghost{background:transparent;color:var(--blue);border:1px solid var(--blue)}
+button:disabled{opacity:.5}
+.stage{margin-top:14px;color:var(--muted);min-height:1.5em}
+.result{display:grid;grid-template-columns:220px 1fr;gap:16px;margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+.result img{width:100%;border:1px solid var(--line);border-radius:4px}
+.result pre{white-space:pre-wrap;font:14px/1.5 var(--sans);background:var(--paper);padding:10px;border-radius:6px;max-height:220px;overflow:auto;margin:6px 0 0}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:15px}
+dt{color:var(--muted)}dd{margin:0;word-break:break-all}
+.sensor{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.pill{padding:3px 12px;border-radius:999px;font-size:15px;font-weight:500;background:var(--sky);color:var(--navy)}
+.pill.open{background:var(--alert);color:#fff}.pill.closed{background:var(--ok);color:#fff}
+.alert{border-left:4px solid var(--alert);background:#fbeceb;padding:8px 12px;margin-top:8px;border-radius:0 6px 6px 0;font-size:15px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:500}
+.scroll{overflow-x:auto;max-height:420px;overflow-y:auto}
+code{font-size:13px;color:var(--muted)}
+#pin{position:fixed;inset:0;background:var(--navy);display:grid;place-items:center;z-index:9}
+#pin div{background:var(--white);padding:30px;border-radius:10px;width:min(360px,90vw)}
+@media(max-width:900px){main{grid-template-columns:1fr}.result{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="pin"><div><h2>Curator console</h2><label for="pinin">Admin PIN</label><input id="pinin" type="password" inputmode="numeric" autofocus>
+  <p id="pinerr" style="color:var(--alert);min-height:1.4em;margin:8px 0"></p><button onclick="login()">Open console</button></div></div>
+
+<header><h1>Curator console</h1><span id="summary"></span></header>
+<main>
+  <section>
+    <h2>Digitization station</h2>
+    <div class="row">
+      <div><label for="camurl">ESP32-CAM address</label><input id="camurl" placeholder="http://192.168.43.50"></div>
+      <div style="flex:0"><button class="ghost" onclick="saveCam()">Save address</button></div>
+    </div>
+    <div class="row">
+      <div><label for="dtitle">Title (optional, AI suggests one if empty)</label><input id="dtitle"></div>
+      <div style="flex:0 0 160px"><label for="dlang">Page language</label>
+        <select id="dlang"><option value="en">English</option><option value="hi">Hindi</option><option value="mr">Marathi</option></select></div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button id="capbtn" onclick="capture()">Capture page with ESP32-CAM</button>
+      <button class="ghost" onclick="document.getElementById('file').click()">Upload image instead</button>
+      <input type="file" id="file" accept="image/*" capture="environment" hidden onchange="upload(this.files[0])">
+    </div>
+    <div class="stage" id="stage" aria-live="polite"></div>
+    <div id="result"></div>
+  </section>
+
+  <section>
+    <h2>Sensors and security</h2>
+    <div class="sensor"><span>Manuscript display case</span><span class="pill" id="casepill">unknown</span><small id="caseseen" style="color:var(--muted);grid-column:1/-1"></small></div>
+    <div class="sensor"><span>Last visitor detected at kiosk</span><span class="pill" id="visitor">none yet</span></div>
+    <div class="sensor"><span>AI assistant</span><span class="pill" id="llm"></span></div>
+    <h2 style="margin-top:18px">Alerts</h2>
+    <div id="alerts"><p style="color:var(--muted)">No alerts.</p></div>
+  </section>
+
+  <section class="full">
+    <h2>Collection catalog (Dublin Core fields)</h2>
+    <div class="scroll"><table><thead><tr><th>Title</th><th>Type</th><th>Date</th><th>Language</th><th>Pages</th><th>Source</th><th>SHA-256 checksum</th><th>Added</th></tr></thead><tbody id="catalog"></tbody></table></div>
+  </section>
+
+  <section class="full">
+    <h2>Audit log</h2>
+    <div class="scroll"><table><thead><tr><th>Time</th><th>Action</th><th>Details</th></tr></thead><tbody id="audit"></tbody></table></div>
+  </section>
+</main>
+
+<script>
+let PIN = "";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+async function api(url, body){
+  const h = {"X-Admin-Pin": PIN};
+  const opt = body instanceof FormData ? {method:"POST", headers:h, body} : body ? {method:"POST", headers:{...h, "Content-Type":"application/json"}, body:JSON.stringify(body)} : {headers:h};
+  const r = await fetch(url, opt);
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.detail || `Request failed (${r.status})`);
+  return j;
+}
+async function login(){
+  PIN = $("pinin").value;
+  try { await api("/api/audit?limit=1"); $("pin").remove(); init(); }
+  catch (e) { $("pinerr").textContent = e.message; }
+}
+$("pinin").addEventListener("keydown", e => e.key === "Enter" && login());
+
+async function init(){ await refreshStatus(); loadCatalog(); loadAudit(); connect(); }
+async function refreshStatus(){
+  const s = await api("/api/status");
+  $("summary").textContent = `${s.documents} documents, ${s.chunks} indexed passages. Kiosk: ${s.public_base}/`;
+  if (s.cam_url && !$("camurl").value) $("camurl").value = s.cam_url;
+  setCase(s.case, s.case_seen);
+  $("visitor").textContent = s.last_visitor ? s.last_visitor.slice(11) : "none yet";
+  $("llm").textContent = s.llm;
+  renderAlerts(s.alerts);
+}
+function setCase(state, seen){
+  const p = $("casepill"); p.textContent = state; p.className = "pill " + (state === "open" ? "open" : state === "closed" ? "closed" : "");
+  $("caseseen").textContent = seen ? `Last signal ${seen.replace("T", " ")}` : "Waiting for the ESP8266 node";
+}
+let alerts = [];
+function renderAlerts(list){ alerts = list || alerts; $("alerts").innerHTML = alerts.length ? alerts.slice(0, 8).map(a => `<div class="alert"><b>${esc(a.message || a.kind)}</b><br>${esc(a.time.replace("T"," "))}</div>`).join("") : `<p style="color:var(--muted)">No alerts.</p>`; }
+
+async function saveCam(){ try { const r = await api("/api/cam/config", {url: $("camurl").value}); $("stage").textContent = `Camera set to ${r.cam_url}`; } catch (e) { $("stage").textContent = e.message; } }
+async function capture(){
+  $("capbtn").disabled = true; $("result").innerHTML = ""; $("stage").textContent = "Capturing with the ESP32-CAM...";
+  try { showResult(await api("/api/cam/capture", {title: $("dtitle").value, lang: $("dlang").value})); }
+  catch (e) { $("stage").textContent = e.message; }
+  $("capbtn").disabled = false;
+}
+async function upload(file){
+  if (!file) return;
+  const fd = new FormData(); fd.append("file", file); fd.append("title", $("dtitle").value); fd.append("lang", $("dlang").value);
+  $("result").innerHTML = ""; $("stage").textContent = "Uploading and running OCR...";
+  try { showResult(await api("/api/ocr/upload", fd)); } catch (e) { $("stage").textContent = e.message; }
+  $("file").value = "";
+}
+function showResult(r){
+  const d = r.doc;
+  $("stage").textContent = "Digitized, indexed and searchable on the kiosk.";
+  $("result").innerHTML = `<div class="result"><img src="/api/docs/${esc(d.id)}/page/1/image" alt="Captured page"><div>
+    <dl><dt>Title</dt><dd>${esc(d.title)}</dd><dt>Subjects</dt><dd>${esc((d.subjects || []).join(", ") || "-")}</dd>
+    <dt>Date</dt><dd>${esc(d.date || "-")}</dd><dt>Language</dt><dd>${esc(d.language)}</dd><dt>SHA-256</dt><dd><code>${esc(d.sha256)}</code></dd></dl>
+    <b style="display:block;margin-top:10px">Recognised text</b><pre>${esc(r.text)}</pre></div></div>`;
+  $("dtitle").value = "";
+  loadCatalog();
+}
+async function loadCatalog(){
+  const docs = (await (await fetch("/api/docs")).json()).documents;
+  $("catalog").innerHTML = docs.map(d => `<tr><td>${esc(d.title)}</td><td>${esc(d.type)}</td><td>${esc(d.date)}</td><td>${esc(d.language)}</td>
+    <td>${d.first_page}-${d.last_page}</td><td>${esc(d.source)}</td><td><code>${esc((d.sha256 || "").slice(0, 16))}…</code></td><td>${esc((d.added_at || "").replace("T"," "))}</td></tr>`).join("");
+}
+async function loadAudit(){
+  const r = await api("/api/audit?limit=40");
+  $("audit").innerHTML = r.entries.map(auditRow).join("");
+}
+function auditRow(e){ const {time, action, type, ...rest} = e; return `<tr><td>${esc(time.replace("T"," "))}</td><td>${esc(action)}</td><td><code>${esc(JSON.stringify(rest))}</code></td></tr>`; }
+
+function connect(){
+  const es = new EventSource("/api/events");
+  es.onmessage = m => {
+    const ev = JSON.parse(m.data);
+    if (ev.type === "audit") $("audit").insertAdjacentHTML("afterbegin", auditRow(ev));
+    if (ev.type === "digitize_status") $("stage").textContent = ev.stage === "capturing" ? "Capturing with the ESP32-CAM..." : "Running OCR and AI metadata tagging...";
+    if (ev.type === "sensor"){
+      if (ev.kind === "tamper_open"){ setCase("open", ev.time); renderAlerts([{...ev, message: `Display case opened (${ev.source})`}, ...alerts]); }
+      if (ev.kind === "tamper_closed") setCase("closed", ev.time);
+      if (ev.kind === "heartbeat") setCase(ev.value || "unknown", ev.time);
+      if (ev.kind === "visitor") $("visitor").textContent = ev.time.slice(11);
+    }
+  };
+  es.onerror = () => { es.close(); setTimeout(connect, 3000); };
+}
+</script>
+</body>
+</html>

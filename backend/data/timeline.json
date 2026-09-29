@@ -1,0 +1,28 @@
+{
+  "note": "Curated demo timeline. Verify every entry against Dr. Ambedkar Foundation sources before public use.",
+  "events": [
+    {"year": "1891", "date": "14 April 1891", "title": "Born at Mhow", "text": "Bhimrao Ramji Ambedkar is born at Mhow in the Central Provinces (present-day Madhya Pradesh), the fourteenth child of Ramji Maloji Sakpal and Bhimabai.", "query": "childhood and early life"},
+    {"year": "1907", "date": "1907", "title": "Matriculation", "text": "He passes the matriculation examination from Elphinstone High School, Bombay, a rare achievement at the time for a student from a community treated as untouchable.", "query": "education and school"},
+    {"year": "1913", "date": "1913", "title": "Columbia University", "text": "With a scholarship from Sayajirao Gaekwad III of Baroda, he begins graduate study at Columbia University in New York.", "query": "Columbia University studies"},
+    {"year": "1916", "date": "May 1916", "title": "Castes in India", "text": "He presents the paper 'Castes in India: Their Mechanism, Genesis and Development' at an anthropology seminar at Columbia.", "query": "Castes in India mechanism genesis development"},
+    {"year": "1920", "date": "31 January 1920", "title": "Mooknayak", "text": "He starts the Marathi fortnightly Mooknayak, the 'leader of the voiceless'.", "query": "Mooknayak newspaper"},
+    {"year": "1923", "date": "1923", "title": "The Problem of the Rupee", "text": "He completes his D.Sc. at the London School of Economics. His thesis is published as 'The Problem of the Rupee', and around the same time he is called to the Bar at Gray's Inn.", "query": "Problem of the Rupee currency"},
+    {"year": "1924", "date": "July 1924", "title": "Bahishkrit Hitakarini Sabha", "text": "He founds the Bahishkrit Hitakarini Sabha to promote education and welfare among the depressed classes.", "query": "Bahishkrit Hitakarini Sabha"},
+    {"year": "1927", "date": "20 March 1927", "title": "Mahad Satyagraha", "text": "He leads the Mahad Satyagraha to assert the right of untouchables to draw water from the public Chavdar Tank.", "query": "Mahad Satyagraha Chavdar tank"},
+    {"year": "1930", "date": "2 March 1930", "title": "Kalaram Temple Satyagraha", "text": "He launches the Kalaram Temple entry satyagraha in Nashik.", "query": "temple entry satyagraha"},
+    {"year": "1930", "date": "1930-1932", "title": "Round Table Conferences", "text": "He represents the depressed classes at the Round Table Conferences in London.", "query": "Round Table Conference depressed classes"},
+    {"year": "1932", "date": "24 September 1932", "title": "Poona Pact", "text": "He signs the Poona Pact with Mahatma Gandhi and others, replacing separate electorates for the depressed classes with reserved seats in joint electorates.", "query": "Poona Pact separate electorates"},
+    {"year": "1936", "date": "1936", "title": "Annihilation of Caste", "text": "He publishes 'Annihilation of Caste', the address he prepared for the Jat-Pat Todak Mandal of Lahore that was never delivered, and founds the Independent Labour Party.", "query": "Annihilation of Caste"},
+    {"year": "1942", "date": "July 1942", "title": "Labour Member", "text": "He joins the Viceroy's Executive Council as Labour Member and founds the All India Scheduled Castes Federation.", "query": "Labour Member labour welfare"},
+    {"year": "1946", "date": "1946", "title": "Who Were the Shudras?", "text": "He publishes 'Who Were the Shudras?'. The People's Education Society, which he founded in 1945, opens Siddharth College in Bombay.", "query": "Who Were the Shudras"},
+    {"year": "1947", "date": "29 August 1947", "title": "Drafting Committee", "text": "Now independent India's first Law Minister, he is elected Chairman of the Drafting Committee of the Constituent Assembly.", "query": "Drafting Committee constitution"},
+    {"year": "1948", "date": "4 November 1948", "title": "Draft Constitution presented", "text": "He introduces the Draft Constitution in the Constituent Assembly.", "query": "introducing the Draft Constitution"},
+    {"year": "1949", "date": "25 November 1949", "title": "Closing speech", "text": "He delivers his closing speech in the Constituent Assembly. The Constitution is adopted the next day, 26 November 1949.", "query": "closing speech political democracy social democracy"},
+    {"year": "1951", "date": "27 September 1951", "title": "Resignation from Cabinet", "text": "He resigns from the Union Cabinet, citing among other reasons the stalling of the Hindu Code Bill.", "query": "Hindu Code Bill resignation"},
+    {"year": "1952", "date": "1952", "title": "Honorary doctorate", "text": "Columbia University awards him an honorary Doctor of Laws, and he enters the Rajya Sabha.", "query": "Columbia honorary degree"},
+    {"year": "1956", "date": "14 October 1956", "title": "Dhamma Deeksha", "text": "At Nagpur, at the site now known as Deekshabhoomi, he embraces Buddhism together with a very large number of followers.", "query": "Buddhism conversion Nagpur"},
+    {"year": "1956", "date": "6 December 1956", "title": "Mahaparinirvan", "text": "He passes away in Delhi. The day is observed as Mahaparinirvan Din.", "query": "death 1956"},
+    {"year": "1957", "date": "1957", "title": "The Buddha and His Dhamma", "text": "'The Buddha and His Dhamma' is published posthumously.", "query": "The Buddha and His Dhamma"},
+    {"year": "1990", "date": "1990", "title": "Bharat Ratna", "text": "He is awarded the Bharat Ratna, India's highest civilian honour, posthumously.", "query": "Bharat Ratna legacy"}
+  ]
+}
